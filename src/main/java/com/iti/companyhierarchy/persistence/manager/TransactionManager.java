@@ -5,8 +5,8 @@ import jakarta.persistence.PersistenceException;
 
 import java.util.function.Function;
 
-public class Manager {
-    private Manager() {
+public class TransactionManager {
+    private TransactionManager() {
     }
 
     public static <R> R doTransaction(Function<EntityManager, R> function) {

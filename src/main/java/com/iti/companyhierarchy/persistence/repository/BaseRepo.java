@@ -1,6 +1,6 @@
 package com.iti.companyhierarchy.persistence.repository;
 
-import com.iti.companyhierarchy.persistence.manager.Manager;
+import com.iti.companyhierarchy.persistence.manager.TransactionManager;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
@@ -21,7 +21,7 @@ public class BaseRepo <Entity, ID>{
     }
 
     public Entity find(ID id){
-        Entity entity = Manager.doTransaction((entityManager)->{
+        Entity entity = TransactionManager.doTransaction((entityManager)->{
             //Definitions
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -42,7 +42,7 @@ public class BaseRepo <Entity, ID>{
         return  entity;
     }
     public <Type> List<Entity> find(String columnName, Type value){
-        List<Entity> entity = Manager.doTransaction((entityManager)->{
+        List<Entity> entity = TransactionManager.doTransaction((entityManager)->{
             //Definitions
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -58,7 +58,7 @@ public class BaseRepo <Entity, ID>{
         return  entity;
     }
     public List<Entity> findAll(){
-        List<Entity> entitys = Manager.doTransaction((entityManager)->{
+        List<Entity> entitys = TransactionManager.doTransaction((entityManager)->{
             //Definitions
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -74,7 +74,7 @@ public class BaseRepo <Entity, ID>{
         return  entitys;
     }
     public boolean delete(Entity entity){
-        Boolean status = Manager.doTransaction((entityManager)->{
+        Boolean status = TransactionManager.doTransaction((entityManager)->{
             Entity entityMerged = entityManager.merge(entity);
             entityManager.remove(entityMerged);
             return true;
@@ -82,7 +82,7 @@ public class BaseRepo <Entity, ID>{
         return  status;
     }
     public boolean delete(String columnName, String value){
-        Boolean status = Manager.doTransaction((entityManager)->{
+        Boolean status = TransactionManager.doTransaction((entityManager)->{
             //Definitions
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaDelete<Entity> criteriaDelete = criteriaBuilder.createCriteriaDelete(entityClass);
@@ -101,21 +101,21 @@ public class BaseRepo <Entity, ID>{
         return  status;
     }
     public boolean save(Entity entity){
-        Boolean status = Manager.doTransaction((entityManager)->{
+        Boolean status = TransactionManager.doTransaction((entityManager)->{
             entityManager.persist(entity);
             return true;
         });
         return  status;
     }
     public Entity update(Entity entity){
-        Entity result = Manager.doTransaction((entityManager)->{
+        Entity result = TransactionManager.doTransaction((entityManager)->{
             Entity entityMerged = entityManager.merge(entity);
             return entityMerged;
         });
         return  result;
     }
     public Long count(){
-        Long count = Manager.doTransaction((entityManager)->{
+        Long count = TransactionManager.doTransaction((entityManager)->{
             //Definitions
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);

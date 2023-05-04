@@ -6,6 +6,7 @@ import com.iti.companyhierarchy.persistence.repository.EngineerRepo;
 import com.iti.companyhierarchy.persistence.repository.MangerRepo;
 import com.iti.companyhierarchy.persistence.repository.TempLaborerRepo;
 import com.iti.companyhierarchy.service.BaseService;
+import com.iti.companyhierarchy.service.HierarchyService;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +23,8 @@ public class AppConfig {
 
     //Services Beans
     @Bean
-    public BaseService getBaseService(){
-        return new BaseService();
+    public HierarchyService getHierarchyService(){
+        return new HierarchyService();
     }
 
     //Repositories Beans
