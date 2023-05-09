@@ -1,17 +1,22 @@
 package com.iti.companyhierarchy.persistence.repository;
 
-import com.iti.companyhierarchy.persistence.manager.TransactionManager;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class BaseRepo <Entity, ID>{
+
+public class BaseRepo <Entity, ID> {
+    @PersistenceContext
+    protected EntityManager entityManager;
     protected Class<Entity> entityClass;
     public BaseRepo(){
         //Get class type of generics by reflections
@@ -20,113 +25,91 @@ public class BaseRepo <Entity, ID>{
         this.entityClass = (Class<Entity>) typeArguments[0];
     }
 
+    @Transactional
     public Entity find(ID id){
-        Entity entity = TransactionManager.doTransaction((entityManager)->{
-            //Definitions
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            Root<Entity> root = criteriaQuery.from(entityClass);
+        //Definitions
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        Root<Entity> root = criteriaQuery.from(entityClass);
 
-            //Queries
-            criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id)).select(root);
-            Entity result = null;
-            try {
-                result = entityManager.createQuery(criteriaQuery).getSingleResult();
-            }catch (PersistenceException exception){
-                throw new RuntimeException(entityClass.getSimpleName() + " Id isn't exist!!");
-            }
+        //Queries
+        criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id)).select(root);
+        Entity result = null;
+        try {
+            result = entityManager.createQuery(criteriaQuery).getSingleResult();
+        }catch (PersistenceException exception){
+            throw new RuntimeException(entityClass.getSimpleName() + " Id isn't exist!!");
+        }
 
-            return result;
-        });
-
-        return  entity;
+        return result;
     }
+    @Transactional
     public <Type> List<Entity> find(String columnName, Type value){
-        List<Entity> entity = TransactionManager.doTransaction((entityManager)->{
-            //Definitions
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            Root<Entity> root = criteriaQuery.from(entityClass);
+        //Definitions
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        Root<Entity> root = criteriaQuery.from(entityClass);
 
-            //Queries
-            criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), value)).select(root);
-            List<Entity> result = entityManager.createQuery(criteriaQuery).getResultList();
+        //Queries
+        criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), value)).select(root);
+        List<Entity> result = entityManager.createQuery(criteriaQuery).getResultList();
 
-            return result;
-        });
-
-        return  entity;
+        return result;
     }
+    @Transactional
     public List<Entity> findAll(){
-        List<Entity> entitys = TransactionManager.doTransaction((entityManager)->{
-            //Definitions
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            Root<Entity> root = criteriaQuery.from(entityClass);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        Root<Entity> root = criteriaQuery.from(entityClass);
 
-            //Queries
-            criteriaQuery.select(root);
-            List<Entity> result = entityManager.createQuery(criteriaQuery).getResultList();
+        //Queries
+        criteriaQuery.select(root);
+        List<Entity> result = entityManager.createQuery(criteriaQuery).getResultList();
 
-            return result;
-        });
-
-        return  entitys;
+        return result;
     }
+    @Transactional
     public boolean delete(Entity entity){
-        Boolean status = TransactionManager.doTransaction((entityManager)->{
-            Entity entityMerged = entityManager.merge(entity);
-            entityManager.remove(entityMerged);
-            return true;
-        });
-        return  status;
+        Entity entityMerged = entityManager.merge(entity);
+        entityManager.remove(entityMerged);
+        return true;
     }
+    @Transactional
     public boolean delete(String columnName, String value){
-        Boolean status = TransactionManager.doTransaction((entityManager)->{
-            //Definitions
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaDelete<Entity> criteriaDelete = criteriaBuilder.createCriteriaDelete(entityClass);
-            Root<Entity> root = criteriaDelete.from(entityClass);
+        //Definitions
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaDelete<Entity> criteriaDelete = criteriaBuilder.createCriteriaDelete(entityClass);
+        Root<Entity> root = criteriaDelete.from(entityClass);
 
-            //Queries
-            criteriaDelete.where(criteriaBuilder.equal(root.get(columnName), value));
-            int row = entityManager.createQuery(criteriaDelete).executeUpdate();
+        //Queries
+        criteriaDelete.where(criteriaBuilder.equal(root.get(columnName), value));
+        int row = entityManager.createQuery(criteriaDelete).executeUpdate();
 
-            if (row>0)
-                return true;
-            else
-                return false;
-        });
-
-        return  status;
-    }
-    public boolean save(Entity entity){
-        Boolean status = TransactionManager.doTransaction((entityManager)->{
-            entityManager.persist(entity);
+        if (row>0)
             return true;
-        });
-        return  status;
+        else
+            return false;
     }
+    @Transactional
+    public boolean save(Entity entity){
+        entityManager.persist(entity);
+        return true;
+    }
+    @Transactional
     public Entity update(Entity entity){
-        Entity result = TransactionManager.doTransaction((entityManager)->{
-            Entity entityMerged = entityManager.merge(entity);
-            return entityMerged;
-        });
-        return  result;
+        Entity entityMerged = entityManager.merge(entity);
+        return entityMerged;
     }
+    @Transactional
     public Long count(){
-        Long count = TransactionManager.doTransaction((entityManager)->{
-            //Definitions
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        //Definitions
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
 
-            //Queries
-            criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(entityClass)));
-            Long rowCount = entityManager.createQuery(criteriaQuery).getSingleResult();
+        //Queries
+        criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(entityClass)));
+        Long rowCount = entityManager.createQuery(criteriaQuery).getSingleResult();
 
-            return rowCount;
-        });
-
-        return  count;
+        return rowCount;
     }
 }

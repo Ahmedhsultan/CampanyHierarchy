@@ -1,10 +1,7 @@
 package com.iti.companyhierarchy.controller;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.iti.companyhierarchy.hierarchy.hierarchyComponents.Employee;
 import com.iti.companyhierarchy.service.HierarchyService;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.json.JsonObject;
 import java.util.List;
 
 @RestController

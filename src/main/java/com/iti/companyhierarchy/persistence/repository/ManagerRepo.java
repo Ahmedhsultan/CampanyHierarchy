@@ -1,9 +1,10 @@
 package com.iti.companyhierarchy.persistence.repository;
 
-import com.iti.companyhierarchy.persistence.entity.Administrative;
 import com.iti.companyhierarchy.persistence.entity.Manager;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-public class MangerRepo extends BaseRepo<Manager, UUID> {
+@Repository
+public class ManagerRepo extends BaseRepo<Manager, UUID> {
 }

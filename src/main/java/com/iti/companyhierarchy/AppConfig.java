@@ -1,12 +1,5 @@
 package com.iti.companyhierarchy;
 
-import com.iti.companyhierarchy.persistence.UnitOfWork;
-import com.iti.companyhierarchy.persistence.repository.AdministrativeRepo;
-import com.iti.companyhierarchy.persistence.repository.EngineerRepo;
-import com.iti.companyhierarchy.persistence.repository.MangerRepo;
-import com.iti.companyhierarchy.persistence.repository.TempLaborerRepo;
-import com.iti.companyhierarchy.service.BaseService;
-import com.iti.companyhierarchy.service.HierarchyService;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,35 +13,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @EnableWebMvc
 public class AppConfig {
-
-    //Services Beans
-    @Bean
-    public HierarchyService getHierarchyService(){
-        return new HierarchyService();
-    }
-
-    //Repositories Beans
-    @Bean
-    public UnitOfWork getUnitOfWork(AdministrativeRepo administrativeRepo, EngineerRepo engineerRepo, MangerRepo mangerRepo, TempLaborerRepo tempLaborerRepo){
-        return new UnitOfWork(administrativeRepo, engineerRepo, mangerRepo, tempLaborerRepo);
-    }
-    @Bean
-    public AdministrativeRepo getAdministrativeRepo(){
-        return new AdministrativeRepo();
-    }
-    @Bean
-    public MangerRepo getMangerRepo(){
-        return new MangerRepo();
-    }
-    @Bean
-    public EngineerRepo getEngineerRepo(){
-        return new EngineerRepo();
-    }
-    @Bean
-    public TempLaborerRepo getTempLaborerRepo(){
-        return new TempLaborerRepo();
-    }
-
     //ORM Beans
     @Bean
     public MysqlDataSource getDataSource() {
@@ -70,6 +34,14 @@ public class AppConfig {
         emf.setDataSource(dataSource);
         emf.setPackagesToScan("com.iti.companyhierarchy");
         emf.setJpaVendorAdapter(vendorAdapter);
+//        emf.setJpaProperties(new Properties() {
+//            {
+//                setProperty("hibernate.hbm2ddl.auto", "create-drop");
+//                setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+//                setProperty("hibernate.show_sql", "true");
+//                setProperty("hibernate.format_sql", "true");
+//            }
+//        });
 
         return emf;
     }

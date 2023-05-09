@@ -7,10 +7,20 @@ import com.iti.companyhierarchy.persistence.entity.Administrative;
 import com.iti.companyhierarchy.persistence.entity.Engineer;
 import com.iti.companyhierarchy.persistence.entity.Manager;
 import com.iti.companyhierarchy.persistence.entity.TempLaborer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
+
 import java.util.Iterator;
 import java.util.List;
 
+@Service
 public class HierarchyService {
+    private final ApplicationContext context;
+
+    public HierarchyService(ApplicationContext context) {
+        this.context = context;
+    }
+
     public void convertToCompositePattern(JsonNode jsonNode){
         String type = jsonNode.get("type").textValue();
 
@@ -22,8 +32,10 @@ public class HierarchyService {
             while (childrenJson.hasNext()){
                 JsonNode jsonNodeNext = childrenJson.next();
                 type = jsonNodeNext.get("type").textValue();
-                addChild(type, jsonNodeNext);
+                rootManagerComponent.addChild(addChild(type, jsonNodeNext));
             }
+
+            rootManagerComponent.saveToDataBase();
         }
     }
 
@@ -31,7 +43,7 @@ public class HierarchyService {
         return Hierarchy.HIERARCHY.getManager().getChildren();
     }
 
-    private void addChild(String type, JsonNode jsonNode){
+    private Employee addChild(String type, JsonNode jsonNode){
         switch (type.toLowerCase()){
             case "manager":
                 ManagerComponent managerComponent = convertJsonToManagerComponent(jsonNode);
@@ -40,10 +52,10 @@ public class HierarchyService {
                     while (childrenJson.hasNext()){
                         JsonNode jsonNodeNext = childrenJson.next();
                         type = jsonNodeNext.get("type").textValue();
-                        addChild(type, jsonNode);
+                        managerComponent.addChild(addChild(type, jsonNode));
                     }
                 }
-                break;
+                return managerComponent;
             case "engineer":
                 EngineerComponent engineerComponent = convertJsonToEngineerComponent(jsonNode);
                 {
@@ -51,20 +63,21 @@ public class HierarchyService {
                     while (childrenJson.hasNext()){
                         JsonNode jsonNodeNext = childrenJson.next();
                         type = jsonNodeNext.get("type").textValue();
-                        addChild(type, jsonNode);
+                        engineerComponent.addChild(addChild(type, jsonNode));
                     }
                 }
-                break;
+                return engineerComponent;
             case "administrative":
                 AdministrativeComponent administrativeComponent = convertJsonToAdministrativeComponent(jsonNode);
-                break;
+                return administrativeComponent;
             case "tempLaborer":
                 TempLaborerComponent tempLaborerComponent = convertJsonToTempLaborerComponent(jsonNode);
-                break;
+                return tempLaborerComponent;
         }
+        return null;
     }
     private ManagerComponent convertJsonToManagerComponent(JsonNode jsonNode){
-        ManagerComponent managerComponent = new ManagerComponent();
+        ManagerComponent managerComponent = context.getBean(ManagerComponent.class);
         Manager manager = new Manager();
         manager.setFirstName(jsonNode.get("firstName").textValue());
         manager.setLastName(jsonNode.get("lastName").textValue());
@@ -73,7 +86,7 @@ public class HierarchyService {
         return managerComponent;
     }
     private EngineerComponent convertJsonToEngineerComponent(JsonNode jsonNode){
-        EngineerComponent engineerComponent = new EngineerComponent();
+        EngineerComponent engineerComponent = context.getBean(EngineerComponent.class);
         Engineer engineer = new Engineer();
         engineer.setFirstName(jsonNode.get("firstName").textValue());
         engineer.setLastName(jsonNode.get("lastName").textValue());
@@ -82,7 +95,7 @@ public class HierarchyService {
         return engineerComponent;
     }
     private AdministrativeComponent convertJsonToAdministrativeComponent(JsonNode jsonNode){
-        AdministrativeComponent administrativeComponent = new AdministrativeComponent();
+        AdministrativeComponent administrativeComponent = context.getBean(AdministrativeComponent.class);
         Administrative administrative = new Administrative();
         administrative.setFirstName(jsonNode.get("firstName").textValue());
         administrative.setLastName(jsonNode.get("lastName").textValue());
@@ -91,7 +104,7 @@ public class HierarchyService {
         return administrativeComponent;
     }
     private TempLaborerComponent convertJsonToTempLaborerComponent(JsonNode jsonNode){
-        TempLaborerComponent laborerComponent = new TempLaborerComponent();
+        TempLaborerComponent laborerComponent = context.getBean(TempLaborerComponent.class);
         TempLaborer tempLaborer = new TempLaborer();
         tempLaborer.setFirstName(jsonNode.get("firstName").textValue());
         tempLaborer.setLastName(jsonNode.get("lastName").textValue());
