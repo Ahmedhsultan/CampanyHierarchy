@@ -1,25 +1,18 @@
 
 U
 %.mvn/wrapper/maven-wrapper.properties,3\2\32e074f71d16c1e88ac02aa83592ca6ad1fd98a8
-:
-
-.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 p
 @src/main/java/com/iti/companyhierarchy/DTO/AdminstrativeDTO.java,b\f\bf7eebdf3dc8427a17f2fe5477fcb8952b9ede64
 j
 :src/main/java/com/iti/companyhierarchy/DTO/ManagerDTO.java,7\d\7d856a3d7bf4f5b37e04ac873c73f34b099aedc3
 k
 ;src/main/java/com/iti/companyhierarchy/DTO/EngineerDTO.java,0\4\049b8e82ca4c60c12fcbb585aa1d65d1a21976ea
-8
-mvnw.cmd,1\f\1f1763f358c257ea3515417352b82b0165647ad1
 n
 >src/main/java/com/iti/companyhierarchy/DTO/TempLaborerDTO.java,6\f\6f5e11f303e07befd804ff6d45fb021af52b21f6
 O
 src/main/webapp/WEB-INF/web.xml,2\e\2e22b6edd746fa3dc40ad7276c87c8d87d72a392
 b
 2src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml,0\4\042ded734e88486d0aab99b680f106ce70502936
-4
-mvnw,5\d\5d837c4ed85ecaaf932c506e80ff5d7b9f3d590d
 z
 Jsrc/main/java/com/iti/companyhierarchy/persistence/entity/TempLaborer.java,c\9\c9ba87d3aee36872fddfcd81805865767ddfe2b5
 v

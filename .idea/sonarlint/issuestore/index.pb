@@ -1,11 +1,6 @@
 
 U
 %.mvn/wrapper/maven-wrapper.properties,3\2\32e074f71d16c1e88ac02aa83592ca6ad1fd98a8
-:
-
-.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
-8
-mvnw.cmd,1\f\1f1763f358c257ea3515417352b82b0165647ad1
 p
 @src/main/java/com/iti/companyhierarchy/DTO/AdminstrativeDTO.java,b\f\bf7eebdf3dc8427a17f2fe5477fcb8952b9ede64
 k
@@ -18,8 +13,6 @@ n
 >src/main/java/com/iti/companyhierarchy/DTO/TempLaborerDTO.java,6\f\6f5e11f303e07befd804ff6d45fb021af52b21f6
 O
 src/main/webapp/WEB-INF/web.xml,2\e\2e22b6edd746fa3dc40ad7276c87c8d87d72a392
-4
-mvnw,5\d\5d837c4ed85ecaaf932c506e80ff5d7b9f3d590d
 v
 Fsrc/main/java/com/iti/companyhierarchy/persistence/entity/Manager.java,a\6\a6a9c8cf80f8462668d52bb42887638ebd6e2ca4
 z
